@@ -1,19 +1,62 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import Map from './Components/Map';
-import Main from './Components/Main';
+import { Asset } from 'expo-asset';
+import { AppLoading } from 'expo';
+
+import MusicApp from './app/index';
 
 
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
 
-const MainNavigator = createStackNavigator({
-  Home: {screen: Main},
-  Map: { screen: Map },
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
+
+
+export default class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      isReady: false
+    }
+  }
+
+  async _loadAssetsAsync() {
+    const imageAssets = cacheImages([require('./assets/bg.jpg')]);
+
+
+    await Promise.all([...imageAssets]);
+  }
+
+  render() {
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this._loadAssetsAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      );
+    }
+    return (
+      <MusicApp />
+    );
+  }
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
-
-const App = createAppContainer(MainNavigator);
-
-export default App;
-
 
