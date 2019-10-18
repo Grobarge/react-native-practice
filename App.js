@@ -4,8 +4,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import { AppLoading } from 'expo';
 
-import MusicApp from './app/index';
+import SignInScreen from './screens/SignInScreen';
+import LoadingScreen from './screens/LoadingScreen';
+import LoginScreen from './screens/LoginSceen';
+import Map from './screens/Map';
 
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+
+import firebase from 'firebase';
+import { firebaseConfig } from './config';
+firebase.initializeApp(firebaseConfig);
 
 
 function cacheImages(images) {
@@ -45,10 +53,20 @@ export default class App extends React.Component {
       );
     }
     return (
-      <MusicApp />
+      <AppNavigator />
     );
   }
 }
+
+const AppSwitchNavigator = createSwitchNavigator({
+  LoadingScreen: LoadingScreen,
+  LoginScreen: LoginScreen,
+  SignInScreen: SignInScreen,
+  Map: Map
+
+});
+
+const AppNavigator = createAppContainer(AppSwitchNavigator);
 
 
 const styles = StyleSheet.create({
