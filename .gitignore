@@ -58,3 +58,4 @@ buck-out/
 
 #api key 
 app.env
+config.js
